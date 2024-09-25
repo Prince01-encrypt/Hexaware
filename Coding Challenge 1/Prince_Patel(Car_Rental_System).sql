@@ -1,6 +1,17 @@
 
+
 CREATE DATABASE CarRentalSystem;
 USE CarRentalSystem;
+
+/*Vehicle Table:
+• vehicleID (Primary Key)
+• make
+• model
+• year
+• dailyRate
+• status (available, notAvailable)
+• passengerCapacity
+• engineCapacity */
 
 CREATE TABLE Vehicle (
     vehicleID INT PRIMARY KEY,
@@ -13,6 +24,13 @@ CREATE TABLE Vehicle (
     engineCapacity INT 
 );
 
+/*Customer Table:
+• customerID (Primary Key)
+• firstName
+• lastName
+• email
+• phoneNumber */
+
 CREATE TABLE Customer (
     customerID INT PRIMARY KEY, 
     firstName VARCHAR(45),    
@@ -20,6 +38,14 @@ CREATE TABLE Customer (
     email VARCHAR(120),             
     phoneNumber VARCHAR(20)        
 );
+
+/*Lease Table:
+• leaseID (Primary Key)
+• vehicleID (Foreign Key referencing Vehicle Table)
+• customerID (Foreign Key referencing Customer Table)
+• startDate
+• endDate
+• type (to distinguish between DailyLease and MonthlyLease) */
 
 CREATE TABLE Lease (
     leaseID INT PRIMARY KEY,   
@@ -31,6 +57,12 @@ CREATE TABLE Lease (
     CONSTRAINT FK_Lease_Vehicle FOREIGN KEY (vehicleID) REFERENCES Vehicle(vehicleID),
     CONSTRAINT FK_Lease_Customer FOREIGN KEY (customerID) REFERENCES Customer(customerID)
 );
+
+/*Payment Table:
+• paymentID (Primary Key)
+• leaseID (Foreign Key referencing Lease Table)
+• paymentDate
+• amount */
 
 CREATE TABLE Payment (
     paymentID INT PRIMARY KEY, 
@@ -134,7 +166,7 @@ SELECT P.*
 FROM Payment P
 JOIN Lease L ON P.leaseID = L.leaseID
 JOIN Customer C ON L.customerID = C.customerID
-WHERE C.phoneNumber = '555-456-7890'; -- We can replace this with the phone number of any specific customer
+WHERE C.phoneNumber = '555-456-7890'; /* We can replace this with the phone number of any specific customer */
 
 --7. Calculate the average daily rate of all available cars.
 
@@ -165,7 +197,7 @@ ORDER BY startDate DESC;
 
 SELECT * 
 FROM Payment
-WHERE YEAR(transactionDate) = 2023; -- In question number 3 we renamed the "paymentDate" column in the Payment table to "transactionDate"
+WHERE YEAR(transactionDate) = 2023; /* In question number 3 we renamed the "paymentDate" column in the Payment table to "transactionDate" */
 
 --12. Retrieve customers who have not made any payments.
 
@@ -220,12 +252,9 @@ ORDER BY TotalSpent DESC;
 
 SELECT 
     V.vehicleID, V.make, V.model, V.year, V.dailyRate, V.status AS availability, L.leaseID, L.customerID, L.startDate, L.endDate, L.type AS leaseType
-FROM 
-    Vehicle V
-LEFT JOIN 
-    Lease L ON V.vehicleID = L.vehicleID
-ORDER BY 
-    V.vehicleID;
+FROM Vehicle V
+LEFT JOIN Lease L ON V.vehicleID = L.vehicleID
+ORDER BY V.vehicleID;
 
 
 
